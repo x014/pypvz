@@ -1880,3 +1880,22 @@ class GiantWallNut(Plant):
         self.mask = pg.mask.from_surface(self.image)
         # must keep the center postion of image when rotate
         self.rect = self.image.get_rect(center=self.init_rect.center)
+    
+class TwoSunFlower(Plant):
+    def __init__(self, x, y, sun_group):
+        Plant.__init__(self, x, y, c.TWOSUNFLOWER, c.PLANT_HEALTH, None)
+        self.sun_timer = 0
+        self.sun_group = sun_group
+        self.attack_check = c.CHECK_ATTACK_NEVER
+
+    def idling(self):
+        if self.sun_timer == 0:
+            self.sun_timer = self.current_time - (c.FLOWER_SUN_INTERVAL - 6000)
+        elif (self.current_time - self.sun_timer) > c.FLOWER_SUN_INTERVAL:
+            self.sun_group.add(
+                Sun(    self.rect.centerx, self.rect.bottom,
+                        self.rect.right, self.rect.bottom + self.rect.h // 2))
+            self.sun_group.add(
+                Sun(    self.rect.centerx, self.rect.bottom,
+                        self.rect.right, self.rect.bottom + self.rect.h // 2))
+            self.sun_timer = self.current_time
